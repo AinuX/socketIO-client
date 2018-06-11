@@ -24,8 +24,13 @@ else:
 from .exceptions import ConnectionError, TimeoutError
 from .parsers import (
     encode_engineIO_content, decode_engineIO_content,
+<<<<<<< HEAD
     format_packet_text, parse_packet_text)
 from .symmetries import memoryview
+=======
+    format_packet_text, parse_packet_text, format_packet, parse_packet)
+from .symmetries import SSLError, memoryview
+>>>>>>> 94c977c7ea14e9ff9146ac2c8d9143bc9663f731
 
 
 ENGINEIO_PROTOCOL = 3
@@ -161,14 +166,17 @@ class WebsocketTransport(AbstractTransport):
             raise ConnectionError('recv disconnected (%s)' % e)
         if not isinstance(packet_text, six.binary_type):
             packet_text = packet_text.encode('utf-8')
-        engineIO_packet_type, engineIO_packet_data = parse_packet_text(
+        engineIO_packet_type, engineIO_packet_data = parse_packet(
             packet_text)
         yield engineIO_packet_type, engineIO_packet_data
 
     def send_packet(self, engineIO_packet_type, engineIO_packet_data=''):
-        packet = format_packet_text(engineIO_packet_type, engineIO_packet_data)
+        packet = format_packet(engineIO_packet_type, engineIO_packet_data)
         try:
-            self._connection.send(packet)
+            if isinstance(packet, bytearray):
+                self._connection.send(packet, opcode=0x2)
+            else:
+                self._connection.send(packet)
         except WebSocketTimeoutException as e:
             raise TimeoutError('send timed out (%s)' % e)
         except (SocketError, WebSocketConnectionClosedException) as e:
