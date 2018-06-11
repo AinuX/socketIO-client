@@ -16,15 +16,10 @@ from .transports import (
     WebsocketTransport, XHR_PollingTransport, prepare_http_session, TRANSPORTS)
 
 
-<<<<<<< HEAD
 __all__ = [
     'SocketIO',
     'SocketIONamespace',
 ]
-=======
-__all__ = 'SocketIO', 'SocketIONamespace'
-__version__ = '0.7.3'
->>>>>>> 94c977c7ea14e9ff9146ac2c8d9143bc9663f731
 BaseNamespace = SocketIONamespace
 LoggingNamespace = LoggingSocketIONamespace
 
@@ -223,11 +218,7 @@ class EngineIO(LoggingMixin):
         except AttributeError:
             pass
         if not hasattr(self, '_opened') or not self._opened:
-<<<<<<< HEAD
             self._http_session.close()
-=======
-
->>>>>>> 94c977c7ea14e9ff9146ac2c8d9143bc9663f731
             return
         engineIO_packet_type = 1
         try:
