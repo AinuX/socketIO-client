@@ -1,12 +1,8 @@
-.. image:: https://travis-ci.org/invisibleroads/socketIO-client.svg?branch=master
-    :target: https://travis-ci.org/invisibleroads/socketIO-client
-
-
-socketIO-client
+socketIO-client-nexus
 ===============
 Here is a `socket.io <http://socket.io>`_ client library for Python. You can use it to write test code for your socket.io server.
 
-Please note that this version implements `socket.io protocol 1 <https://github.com/automattic/socket.io-protocol>`_, which is not backwards compatible. If you want to communicate using `socket.io protocol 0 <https://github.com/learnboost/socket.io-spec>`_ (which is compatible with `gevent-socketio <https://github.com/abourget/gevent-socketio>`_), please use `socketIO-client 0.5.7.4 <https://pypi.python.org/pypi/socketIO-client/0.5.7.4>`_.
+This is a forked version to implement the Socket.io 2.x changes. You can find the original `here <https://github.com/invisibleroads/socketIO-client>`_.
 
 
 Installation
@@ -19,23 +15,8 @@ Install the package in an isolated environment. ::
     pip install -U socketIO-client==0.8.0
 
 
-Test
-----
-Install additional packages if you want to run the tests. ::
-
-    VIRTUAL_ENV=$HOME/.virtualenvs/crosscompute
-    export NODE_PATH=$VIRTUAL_ENV/lib/node_modules
-    export NPM_CONFIG_PREFIX=$VIRTUAL_ENV
-    npm install -g socket.io@1
-
-Launch test server and run tests.::
-
-    cd ~/Documents
-    git clone https://github.com/invisibleroads/socketIO-client
-    git checkout -t 0.8.0
-    cd socketIO-client
-    DEBUG=* node tests/serve.js  # Start socket.io server in terminal one
-    nosetests  # Run tests in terminal two
+    # Install package
+    pip install -U socketIO-client-nexus
 
 
 Usage
@@ -47,7 +28,10 @@ Activate isolated environment. ::
     export NODE_PATH=$VIRTUAL_ENV/lib/node_modules
     export NPM_CONFIG_PREFIX=$VIRTUAL_ENV
 
-Start your socket.io server. ::
+Launch your socket.io server. ::
+
+    cd $(python -c "import os, socketIO_client_nexus;\
+        print(os.path.dirname(socketIO_client_nexus.__file__))")
 
     npm install -g http-proxy
     DEBUG=* node tests/serve.js  # Start socket.io server in terminal one
@@ -56,12 +40,12 @@ Start your socket.io server. ::
 For debugging information, run these commands first. ::
 
     import logging
-    logging.getLogger('socketIO-client').setLevel(logging.DEBUG)
+    logging.getLogger('socketIO-client-nexus').setLevel(logging.DEBUG)
     logging.basicConfig()
 
 Emit. ::
 
-    from socketIO_client import SocketIO, LoggingNamespace
+    from socketIO_client_nexus import SocketIO, LoggingNamespace
 
     with SocketIO('127.0.0.1', 8000, LoggingNamespace) as socketIO:
         socketIO.emit('aaa')
@@ -69,7 +53,7 @@ Emit. ::
 
 Emit with callback. ::
 
-    from socketIO_client import SocketIO, LoggingNamespace
+    from socketIO_client_nexus import SocketIO, LoggingNamespace
 
     def on_bbb_response(*args):
         print('on_bbb_response', args)
@@ -80,7 +64,7 @@ Emit with callback. ::
 
 Define events. ::
 
-    from socketIO_client import SocketIO, LoggingNamespace
+    from socketIO_client_nexus import SocketIO, LoggingNamespace
 
     def on_connect():
         print('connect')
@@ -118,7 +102,7 @@ Define events. ::
 
 Define events in a namespace. ::
 
-    from socketIO_client import SocketIO, BaseNamespace
+    from socketIO_client_nexus import SocketIO, BaseNamespace
 
     class Namespace(BaseNamespace):
 
@@ -132,7 +116,7 @@ Define events in a namespace. ::
 
 Define standard events. ::
 
-    from socketIO_client import SocketIO, BaseNamespace
+    from socketIO_client_nexus import SocketIO, BaseNamespace
 
     class Namespace(BaseNamespace):
 
@@ -150,7 +134,7 @@ Define standard events. ::
 
 Define different namespaces on a single socket. ::
 
-    from socketIO_client import SocketIO, BaseNamespace
+    from socketIO_client_nexus import SocketIO, BaseNamespace
 
     class ChatNamespace(BaseNamespace):
 
@@ -174,7 +158,7 @@ Define different namespaces on a single socket. ::
 
 Connect via SSL (https://github.com/invisibleroads/socketIO-client/issues/54). ::
 
-    from socketIO_client import SocketIO
+    from socketIO_client_nexus import SocketIO
 
     # Skip server certificate verification
     SocketIO('https://127.0.0.1', verify=False)
@@ -186,7 +170,8 @@ Connect via SSL (https://github.com/invisibleroads/socketIO-client/issues/54). :
 
 Specify params, headers, cookies, proxies thanks to the `requests <http://docs.python-requests.org>`_ library. ::
 
-    from socketIO_client import SocketIO
+    from socketIO_client_nexus import SocketIO
+    from base64 import b64encode
 
     SocketIO('127.0.0.1', 8000, params={
         'q': 'qqq',
@@ -200,15 +185,15 @@ Specify params, headers, cookies, proxies thanks to the `requests <http://docs.p
 
 Wait forever. ::
 
-    from socketIO_client import SocketIO
+    from socketIO_client_nexus import SocketIO
 
     socketIO = SocketIO('127.0.0.1', 8000)
     socketIO.wait()
 
 Don't wait forever. ::
 
-    from socketIO_client import SocketIO
-    from socketIO_client.exceptions import ConnectionError
+    from requests.exceptions import ConnectionError
+    from socketIO_client_nexus import SocketIO
 
     try:
         socket = SocketIO('127.0.0.1', 8000, wait_for_connection=False)

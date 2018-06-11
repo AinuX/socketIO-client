@@ -26,7 +26,7 @@ setup(
     keywords='socket.io node.js',
     author='Roy Hyunjin Han',
     author_email='rhh@crosscompute.com',
-    url='https://github.com/invisibleroads/socketIO-client',
+    url='https://github.com/nexus-devs/socketIO-client',
     install_requires=[
         'requests>=2.18.2',
         'six>=1.10.0',
