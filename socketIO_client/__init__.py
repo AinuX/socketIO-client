@@ -199,12 +199,15 @@ class EngineIO(LoggingMixin):
         except AttributeError:
             pass
         if not hasattr(self, '_opened') or not self._opened:
+            self._http_session.close()
             return
         engineIO_packet_type = 1
         try:
             self._transport_instance.send_packet(engineIO_packet_type)
         except (TimeoutError, ConnectionError):
             pass
+        self._http_session.close()
+        self._transport_instance.close()
         self._opened = False
 
     def _ping(self, engineIO_packet_data=''):
