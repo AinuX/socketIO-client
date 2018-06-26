@@ -25,7 +25,14 @@ from .exceptions import ConnectionError, TimeoutError
 from .parsers import (
     encode_engineIO_content, decode_engineIO_content,
     format_packet_text, parse_packet_text, format_packet, parse_packet)
-from .symmetries import SSLError, memoryview
+from .symmetries import memoryview
+
+try:
+    from ssl import SSLError
+except ImportError:
+    # dummy class of SSLError for ssl none-support environment.
+    class SSLError(Exception):
+        pass
 
 
 ENGINEIO_PROTOCOL = 3
@@ -48,7 +55,7 @@ class AbstractTransport(object):
 
     def set_timeout(self, seconds=None):
         pass
-    
+
     def close(self):
         pass
 
@@ -189,7 +196,7 @@ class WebsocketTransport(AbstractTransport):
         if self._timeout is None:
             self._timeout = seconds
         self._connection.settimeout(seconds or self._timeout)
-    
+
     def close(self):
         self._connection.close()
 

@@ -30,8 +30,8 @@ Activate isolated environment. ::
 
 Launch your socket.io server. ::
 
-    cd $(python -c "import os, socketIO_client_nexus;\
-        print(os.path.dirname(socketIO_client_nexus.__file__))")
+    cd $(python -c "import os, socketIO_client;\
+        print(os.path.dirname(socketIO_client.__file__))")
 
     npm install -g http-proxy
     DEBUG=* node tests/serve.js  # Start socket.io server in terminal one
@@ -45,7 +45,7 @@ For debugging information, run these commands first. ::
 
 Emit. ::
 
-    from socketIO_client_nexus import SocketIO, LoggingNamespace
+    from socketIO_client import SocketIO, LoggingNamespace
 
     with SocketIO('127.0.0.1', 8000, LoggingNamespace) as socketIO:
         socketIO.emit('aaa')
@@ -53,7 +53,7 @@ Emit. ::
 
 Emit with callback. ::
 
-    from socketIO_client_nexus import SocketIO, LoggingNamespace
+    from socketIO_client import SocketIO, LoggingNamespace
 
     def on_bbb_response(*args):
         print('on_bbb_response', args)
@@ -64,7 +64,7 @@ Emit with callback. ::
 
 Define events. ::
 
-    from socketIO_client_nexus import SocketIO, LoggingNamespace
+    from socketIO_client import SocketIO, LoggingNamespace
 
     def on_connect():
         print('connect')
@@ -102,7 +102,7 @@ Define events. ::
 
 Define events in a namespace. ::
 
-    from socketIO_client_nexus import SocketIO, BaseNamespace
+    from socketIO_client import SocketIO, BaseNamespace
 
     class Namespace(BaseNamespace):
 
@@ -116,7 +116,7 @@ Define events in a namespace. ::
 
 Define standard events. ::
 
-    from socketIO_client_nexus import SocketIO, BaseNamespace
+    from socketIO_client import SocketIO, BaseNamespace
 
     class Namespace(BaseNamespace):
 
@@ -134,7 +134,7 @@ Define standard events. ::
 
 Define different namespaces on a single socket. ::
 
-    from socketIO_client_nexus import SocketIO, BaseNamespace
+    from socketIO_client import SocketIO, BaseNamespace
 
     class ChatNamespace(BaseNamespace):
 
@@ -158,7 +158,7 @@ Define different namespaces on a single socket. ::
 
 Connect via SSL (https://github.com/invisibleroads/socketIO-client/issues/54). ::
 
-    from socketIO_client_nexus import SocketIO
+    from socketIO_client import SocketIO
 
     # Skip server certificate verification
     SocketIO('https://127.0.0.1', verify=False)
@@ -170,7 +170,7 @@ Connect via SSL (https://github.com/invisibleroads/socketIO-client/issues/54). :
 
 Specify params, headers, cookies, proxies thanks to the `requests <http://docs.python-requests.org>`_ library. ::
 
-    from socketIO_client_nexus import SocketIO
+    from socketIO_client import SocketIO
     from base64 import b64encode
 
     SocketIO('127.0.0.1', 8000, params={
@@ -185,7 +185,7 @@ Specify params, headers, cookies, proxies thanks to the `requests <http://docs.p
 
 Wait forever. ::
 
-    from socketIO_client_nexus import SocketIO
+    from socketIO_client import SocketIO
 
     socketIO = SocketIO('127.0.0.1', 8000)
     socketIO.wait()
@@ -193,7 +193,7 @@ Wait forever. ::
 Don't wait forever. ::
 
     from requests.exceptions import ConnectionError
-    from socketIO_client_nexus import SocketIO
+    from socketIO_client import SocketIO
 
     try:
         socket = SocketIO('127.0.0.1', 8000, wait_for_connection=False)
