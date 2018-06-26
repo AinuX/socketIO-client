@@ -2,7 +2,7 @@ import json
 import six
 from collections import namedtuple
 from six.moves.urllib.parse import urlparse as parse_url
-from base64 import b64encode,b64decode
+from base64 import b64encode, b64decode
 from copy import deepcopy
 
 from .symmetries import decode_string, encode_string, get_byte, get_character, get_int
@@ -13,6 +13,7 @@ EngineIOSession = namedtuple('EngineIOSession', [
 
 
 class SocketIOPacket():
+
     def __init__(self, packet_type, path, ack_id, args, attachments):
         self.type = packet_type
         self.path = path
@@ -172,7 +173,7 @@ def format_packet(packet_type, packet_data):
         packet_type = chr(int(packet_type))
         if not isinstance(packet_type, six.binary_type):
             packet_type = encode_string(packet_type)
-        return bytearray(packet_type+six.binary_type(packet_data))
+        return bytearray(packet_type + six.binary_type(packet_data))
     return str(packet_type) + packet_data
 
 
@@ -224,15 +225,20 @@ def _make_packet_prefix(packet):
 
 
 def _read_packet_length(content, content_index):
-    start = content_index
-    while content.decode()[content_index] != ':':
+    while get_byte(content, content_index) != 0:
         content_index += 1
-    packet_length_string = content.decode()[start:content_index]
+    content_index += 1
+    packet_length_string = ''
+    byte = get_byte(content, content_index)
+    while byte != 255:
+        packet_length_string += str(byte)
+        content_index += 1
+        byte = get_byte(content, content_index)
     return content_index, int(packet_length_string)
 
 
 def _read_packet_text(content, content_index, packet_length):
-    while content.decode()[content_index] == ':':
+    while get_byte(content, content_index) == 255:
         content_index += 1
-    packet_text = content.decode()[content_index:content_index + packet_length]
-    return content_index + packet_length, packet_text.encode()
+    packet_text = content[content_index:content_index + packet_length]
+    return content_index + packet_length, packet_text

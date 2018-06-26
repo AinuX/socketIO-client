@@ -52,7 +52,6 @@ class EngineIO(LoggingMixin):
         self._wants_to_close = False
         atexit.register(self._close)
 
-
         if Namespace:
             self.define(Namespace)
         self._transport
@@ -401,7 +400,8 @@ class SocketIO(EngineIO):
     # Define
 
     def define(self, Namespace, path='', *args):
-        self._namespace_by_path[path] = namespace = Namespace(self, path, *args)
+        self._namespace_by_path[
+            path] = namespace = Namespace(self, path, *args)
         if path:
             self.connect(path)
             self.wait(for_namespace=namespace)
@@ -433,7 +433,6 @@ class SocketIO(EngineIO):
 
     def disconnect(self, path=''):
         if path and self._opened:
-
 
             socketIO_packet_type = 1
             socketIO_packet_data, _ = format_socketIO_packet_data(path)
@@ -496,8 +495,6 @@ class SocketIO(EngineIO):
                 raise ConnectionError(
                     'invalid socket.io namespace (%s)' % namespace.path)
 
-
-
             if not getattr(namespace, '_connected', False):
                 self._debug(
                     '%s[socket.io waiting for connection]',
@@ -526,7 +523,8 @@ class SocketIO(EngineIO):
             socketIO_packet_data.type -= 3
         else:
             socketIO_packet_data = parse_socketIO_packet(engineIO_packet_data)
-            socketIO_packet_data.namespace = self.get_namespace(socketIO_packet_data.path)
+            socketIO_packet_data.namespace = self.get_namespace(
+                socketIO_packet_data.path)
         socketIO_packet_type = socketIO_packet_data.type
         # Launch callbacks
         namespace = socketIO_packet_data.namespace
