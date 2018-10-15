@@ -1,5 +1,7 @@
 import atexit
 
+import threading
+
 from .exceptions import ConnectionError, TimeoutError, PacketError
 from .heartbeats import HeartbeatThread
 from .logs import LoggingMixin
