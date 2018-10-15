@@ -22,7 +22,7 @@ __all__ = [
 ]
 BaseNamespace = SocketIONamespace
 LoggingNamespace = LoggingSocketIONamespace
-
+lock = threading.Lock()
 
 def retry(f):
     def wrap(*args, **kw):
@@ -74,10 +74,11 @@ class EngineIO(LoggingMixin):
         warning_screen = self._yield_warning_screen()
         for elapsed_time in warning_screen:
             try:
+                lock.acquire()
                 transport_name = self._client_transports[0]
                 self._transport_instance = self._get_transport(transport_name)
                 self.transport_name = transport_name
-
+                lock.release()
                 engineIO_packet_type, engineIO_packet_data = next(
                     self._transport_instance.recv_packet())
                 break
@@ -87,6 +88,7 @@ class EngineIO(LoggingMixin):
                 warning = Exception(
                     '[engine.io waiting for connection] %s' % e)
                 warning_screen.throw(warning)
+                lock.release()
 
         assert engineIO_packet_type == 0  # engineIO_packet_type == open
         session = parse_engineIO_session(engineIO_packet_data)
